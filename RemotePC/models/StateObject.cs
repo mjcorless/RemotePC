@@ -1,7 +1,7 @@
 ﻿using System.Net.Sockets;
 using System.Text;
 
-namespace RemotePC.models
+namespace RemotePC.Models
 {
 	// State object for reading client data asynchronously
 	public class StateObject

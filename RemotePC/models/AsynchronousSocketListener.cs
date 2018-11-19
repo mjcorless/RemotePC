@@ -1,11 +1,12 @@
-﻿using System;
+﻿using RemotePC.Controllers;
+using System;
 using System.Diagnostics;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 
-namespace RemotePC.models
+namespace RemotePC.Models
 {
 	internal static class AsynchronousSocketListener
 	{
@@ -21,8 +22,7 @@ namespace RemotePC.models
 			IPEndPoint localEndPoint = new IPEndPoint(ipAddress, 11000);
 
 			// Create a TCP/IP socket.
-			Socket listener = new Socket(ipAddress.AddressFamily,
-				SocketType.Stream, ProtocolType.Tcp);
+			Socket listener = new Socket(ipAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
 
 			// Bind the socket to the local endpoint and listen for incoming connections.
 			try
@@ -59,13 +59,12 @@ namespace RemotePC.models
 			// Create the state object.
 			StateObject state = new StateObject();
 			state.workSocket = handler;
-			handler.BeginReceive(state.buffer, 0, StateObject.BufferSize, 0,
-				new AsyncCallback(ReadCallback), state);
+			handler.BeginReceive(state.buffer, 0, StateObject.BufferSize, 0, new AsyncCallback(ReadCallback), state);
 		}
 
 		public static void ReadCallback(IAsyncResult ar)
 		{
-			String content = String.Empty;
+			string content = string.Empty;
 
 			// Retrieve the state object and the handler socket from the asynchronous state object.
 			StateObject state = (StateObject)ar.AsyncState;
@@ -77,14 +76,18 @@ namespace RemotePC.models
 			if (bytesRead > 0)
 			{
 				// There might be more data, so store the data received so far.
-				content = Encoding.ASCII.GetString(state.buffer, 0, bytesRead);
+				content = Encoding.Unicode.GetString(state.buffer, 0, bytesRead);
 
 				state.sb.Append(content);
 
-				// Check for end-of-file tag. If it is not there, read more data.
-				if (content.EndsWith("<EOF>", StringComparison.CurrentCultureIgnoreCase))
+				// Check for end-of-text tag. If it is not there, read more data.
+				if (content.EndsWith(Common.EOTSTRING))
 				{
 					content = state.sb.ToString();
+
+					RouteController routeController = new RouteController(content);
+					routeController.HandleRPC();
+
 					// All the data has been read from the client. Display it on the Debug.
 					Debug.WriteLine($"Read {content.Length} bytes from socket. \n Data : {content}");
 					// Echo the data back to the client.
@@ -99,10 +102,10 @@ namespace RemotePC.models
 			}
 		}
 
-		private static void Send(Socket handler, String data)
+		private static void Send(Socket handler, string data)
 		{
-			// Convert the string data to byte data using ASCII encoding.
-			byte[] byteData = Encoding.ASCII.GetBytes(data);
+			// Convert the string data to byte data using Unicode encoding.
+			byte[] byteData = Encoding.Unicode.GetBytes(data);
 
 			// Begin sending the data to the remote device.
 			handler.BeginSend(byteData, 0, byteData.Length, 0, new AsyncCallback(SendCallback), handler);
