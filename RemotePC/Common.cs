@@ -22,7 +22,7 @@
 		/// <summary>
 		/// End of line in string format to be used throughout program
 		/// </summary>
-		public static string EOLSTRING = "'\u0012'";
+		public static string EOLSTRING = "\u0012";
 
 		#endregion properties
 	}

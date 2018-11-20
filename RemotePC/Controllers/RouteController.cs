@@ -153,6 +153,7 @@ namespace RemotePC.Controllers
 
 		/// <summary>
 		/// Handles RPCs to play youtube
+		/// Note: this will play any valid URL by opening the provided URL in chrome.exe
 		/// </summary>
 		private void HandleYouTubePlayerRPC()
 		{

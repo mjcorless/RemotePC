@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Runtime.InteropServices;
 
 namespace RemotePC.Models
@@ -25,6 +21,10 @@ namespace RemotePC.Models
 		public bool UnLockWorkStation()
 		{
 			throw new NotImplementedException("Will implement when I figure out how to cache my credentials securely.");
+			// https://www.codeproject.com/Articles/16197/Remotely-Unlock-a-Windows-Workstation has a
+			// hack to do this but it seems like more of a hassle than is worth committing to. I
+			// can't think of a valid use case for the need unlock my PC programmatically if I am at
+			// my computer I can just use my keyboard to unlock instead
 		}
 
 		#endregion methods
